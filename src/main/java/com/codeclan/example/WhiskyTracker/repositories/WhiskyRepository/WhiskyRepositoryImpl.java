@@ -33,4 +33,20 @@ public class WhiskyRepositoryImpl implements WhiskyRepositoryCustom {
         }
         return results;
     }
+
+    @Override
+    @Transactional
+    public List<Whisky> findWhiskyFromRegion(String region) {
+        List<Whisky> results = null;
+        Session session = entityManager.unwrap(Session.class);
+        try {
+            Criteria cr = session.createCriteria(Whisky.class);
+            cr.createAlias("distillery", "distillery");
+            cr.add(Restrictions.eq("distillery.region", region));
+            results = cr.list();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 }
